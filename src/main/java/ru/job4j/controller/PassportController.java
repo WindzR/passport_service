@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/passports/")
 public class PassportController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
