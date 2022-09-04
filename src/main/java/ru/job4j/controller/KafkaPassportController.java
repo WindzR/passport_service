@@ -1,28 +1,24 @@
 package ru.job4j.controller;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.job4j.domain.MessageDTO;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-@Component
+@RestController
 public class KafkaPassportController {
 
     @Autowired
-    private KafkaTemplate<Integer, String> template;
+    private KafkaTemplate<Integer, MessageDTO> template;
 
-    private final Map<String, Integer> statistic = new ConcurrentHashMap<>();
-
-    @KafkaListener(topics = {"passport_controller"})
-    public void onApiCall(ConsumerRecord<Integer, String> input) {
-        String value = input.value();
-        statistic.put(value, statistic.getOrDefault(value, 0) + 1);
-        if (value.equals("PassportAction")) {
-            template.send("passport-stats", statistic.toString());
-        }
+    @PostMapping
+    public void sendNotification(MessageDTO messageDTO) {
+        ListenableFuture<SendResult<Integer, MessageDTO>> future
+                = template.send("passport_service", messageDTO.getId(), messageDTO);
+        future.addCallback(System.out :: println, System.err :: println);
+        template.flush();
     }
 }

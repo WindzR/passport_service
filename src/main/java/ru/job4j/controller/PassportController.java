@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.domain.Passport;
@@ -114,6 +115,7 @@ public class PassportController {
      * Находит список паспортов с истекшим сроком
      * @return список паспортов
      */
+    @Scheduled(fixedDelay = 10000)
     @GetMapping("unavailable")
     public List<Passport> findUnavailablePassports() {
         return passportService.findExpiredPassports();
