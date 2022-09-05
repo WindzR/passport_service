@@ -1,19 +1,28 @@
-# Getting Started
+# PASSPORT SERVICE
 
-### Reference Documentation
+### Описание
 
-For further reference, please consider the following sections:
+Сервис по управлению паспортами, со следующими возможностями:
+- сохранение нового паспорта
+- обновление существующего паспорта
+- удаление паспотра по id
+- возвращение списка всех паспортов
+- нахождение паспорта по заданной серии
+- нахождение списка паспортов с истекшим сроком
+- нахождение списка паспортов со сроком истечения в ближайшие 3 месяца
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.2/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.7.2/maven-plugin/reference/html/#build-image)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.7.2/reference/htmlsingle/#web)
+Использует порт 8080
 
-### Guides
+Отправляет сообщения через брокер сообщений *KAFKA* , используя топик "passport_service"
 
-The following guides illustrate how to use some features concretely:
+Описание взаимодействия сервисов:
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+- passport_service - продюсер, отправляет MessageDTO на mailingList_service со списком просроченных паспортов, использует @Scheduled согласно задания
+
+- passport_collector - консьюмер, слушает топики email/unavailable_passports от mailingList_service и выводит информацию в консоль(имитирует прием писем от почтовой службы)
+
+- mailingList_service - выступает как консьюмер, так и продюсер, - слушает passport_service и отправляет сообщение Post о просроченных паспортах, а также имитирует рассылку с дефолтным сообщением Post(первое задание)
+
+
+
 
